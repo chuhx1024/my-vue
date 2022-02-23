@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        hello
+    </div>
+    <script>
+        // 模拟 Vue 中的 data 选项
+        let data = {
+            msg: 'hello'
+        }
+        // 模拟 Vue 实例
+
+        let vm = {}
+
+        // 数据劫持: 当访问或者设置 vm 中的成员的时候做一些干预操作
+        Object.defineProperty(vm, 'msg', {
+            // 设置对象的属性可枚举, 可遍历
+            enumerable: true,
+            // 设置对象的属性可配置(可以使用 delete 删除, 可以使用 defineProperty 重新定义)
+            configurable: true,
+            // 获取值时执行
+            get () {
+                console.log(data.msg, 'get')
+                return data.msg
+            },
+            // 设置值时触发
+            set (newVal) {
+                console.log('set', newVal)
+                if (newVal === data.msg) return
+                data.msg = newVal
+                document.querySelector('#app').textContent = data.msg
+            }
+        })
+
+        // 测试 
+        console.log(vm.msg)
+        vm.msg = 'hello world'
+        console.log(vm.msg)
+
+        // 问题1: 为什么 不直接给 data 设置 defineProperty 而要设置给 vm
+        //      因为 直接给 data 定义 在操作时 会出现 循环触发 导致内存溢出, vue源码中也有体现
+    </script>
+    
+</body>
+</html>
