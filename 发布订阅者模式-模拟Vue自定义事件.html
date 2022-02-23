@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布订阅者模式</title>
+</head>
+<body>
+    <div>
+        ### 概念
+            - 订阅者
+            - 发布者
+            - 信号中心
+
+        ### 举例
+        1. vue 自定义事件
+        ```js
+            // 这个就是 发布订阅者的模式  但是很难区分 发布者 订阅者 信号中心 其实 三者都是 vm
+
+            let vm = new Vue()
+
+            vm.$on('dataChange', () => {
+                console.log('dataChange')
+            })
+            vm.$on('dataChange1', () => {
+                console.log('dataChange1')
+            })
+            vm.#emit('dataChange')
+        ```
+
+        2. vue 兄弟组件通信
+        ```js
+            // eventBus.js
+            // 事件中心
+            let eventBus = new Vue()
+
+            // ComponentsA.vue
+            // 发布者
+            addTodo () {
+                // 发布消息(事件)
+                eventBus.$emit('add-todo', {text: this.newTodoText})
+                this.newTodoText = ''
+            }
+
+            // ComponentsB.vue
+            // 订阅者
+            created () {
+                // 订阅消息(事件)
+                eventBus.$on('add-todo', this.addTodo)
+            }
+        ```
+    </div>
+    <script>
+        // 事件触发器
+        class EventEmitter {
+            constructor () {
+                // 创建一个没有原型的对象 提高性能
+                // { 'click': [fn1, fn2], 'change': [fn3,fn4]}
+                this.subs = Object.create(null)
+
+            }
+            // 注册事件
+            $on (eventType, handler) {
+                this.subs[eventType] = this.subs[eventType] || []
+                this.subs[eventType].push(handler)
+            }
+
+            // 触发事件
+            $emit (eventType) {
+                if (this.subs[eventType]) {
+                    this.subs[eventType].forEach(item => {
+                        item()
+                    })
+                }
+            }
+        }
+
+        // 测试
+        const vm = new EventEmitter()
+        vm.$on('click', ()=> {
+            console.log('click1')
+        })
+        vm.$on('click', ()=> {
+            console.log('click2')
+        })
+        vm.$on('click', ()=> {
+            console.log('click3')
+        })
+        vm.$emit('click')
+    </script>
+    
+</body>
+</html>
