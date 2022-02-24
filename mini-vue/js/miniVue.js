@@ -5,6 +5,8 @@ class MiniVue {
         this.$data = options.data || {}
         this.$el = typeof options.el === 'string' ? document.querySelector(options.el) : options.el
         this._proxyData(options.data)
+
+        new Observe(options.data)
     }
 
     _proxyData (data) {
