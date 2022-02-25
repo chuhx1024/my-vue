@@ -1,3 +1,8 @@
+/**
+ * 功能:主要负责更新 数据
+ *  1. 在模板编译的阶段 挂载
+ *  2. 当 触发 set 是 执行里边的 update 回调方法
+ */
 class Watcher {
     constructor (vm, key, cb) {
       this.vm = vm

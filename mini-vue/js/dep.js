@@ -1,3 +1,8 @@
+/**
+ * 功能:
+ * - 创建的一个观察者 
+ * - 在observe 处理响应式阶段 收集 watcher 
+ */
 class Dep {
     constructor () {
       // 存储所有的观察者
