@@ -17,13 +17,21 @@ class Observe {
     }
 
     defineReactive (obj, key, val) {
+
         // 如果 val 是对象 就把 val 转换成对象  就是处理 preson: {name: '张三'}
         this.walk(val)
+
         const that = this
+        // 负责收集依赖，并发送通知
+        let dep = new Dep()
         Object.defineProperty(obj, key, {
             enumerable: true,
             configurable: true,
             get () {
+                // 收集依赖
+                alert(val)
+                Dep.target && dep.addSub(Dep.target)
+                console.log(dep, 999)
                 return val
             },
             set (newVal) {

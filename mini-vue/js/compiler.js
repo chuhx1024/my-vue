@@ -6,10 +6,11 @@
  * - 一句话总结: 就是在操作 DOM
  */
 
-class Compoler {
+class Compiler {
     constructor (vm) {
         this.el = vm.$el
         this.vm = vm
+        this.compiler(vm.$el)
 
     }
 
@@ -30,7 +31,7 @@ class Compoler {
     compiler (el) {
         let childNodes = el.childNodes
         // childNodes 是伪数组 想 遍历 使用 Array.from 
-        Array.from(chileNodes).forEach(node => {
+        Array.from(childNodes).forEach(node => {
             if (this.isElementNode(node)) {
                 this.compileElement(node)
             } else if (this.isTextNode(node)) {
@@ -44,5 +45,25 @@ class Compoler {
 
         })
     }
+    compileText (node) {
+        const content = node.textContent
+        // 匹配{{xxx}}的内容
+        let reg = /\{\{(.+?)\}\}/
+        if (reg.test(content)) {
+            console.log(content)
+            node.textContent = content.replace(reg, this.vm[RegExp.$1.trim()])
+
+            // 创建watcher对象，当数据改变更新视图
+            new Watcher(this.vm, RegExp.$1.trim(), (newValue) => {
+                node.textContent = newValue
+            })
+        }
+
+    }
+
+    compileElement () {
+        // console.log('ele')
+    }
+
 
 }
