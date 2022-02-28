@@ -6,6 +6,24 @@
  * - 一句话总结: 就是在操作 DOM
  */
 
+
+const compileUtil = {
+    text (node, key) {
+        node.textContent = this.vm[key]
+        new Watcher(this.vm, key, (newVal) => {
+            node.textContent = newVal
+        })
+    },
+    model (node, key) {
+        node.value = this.vm[key]
+        node.addEventListener('input', (val) => {
+            this.vm[key] = node.value
+        })
+        new Watcher(this.vm, key, (newVal) => {
+            node.value = newVal
+        })
+    }
+}
 class Compiler {
     constructor (vm) {
         this.el = vm.$el
@@ -50,7 +68,7 @@ class Compiler {
         // 匹配{{xxx}}的内容
         let reg = /\{\{(.+?)\}\}/
         if (reg.test(content)) {
-            console.log(content)
+            // console.log(content)
             node.textContent = content.replace(reg, this.vm[RegExp.$1.trim()])
 
             // 创建watcher对象，当数据改变更新视图
@@ -61,8 +79,15 @@ class Compiler {
 
     }
 
-    compileElement () {
-        // console.log('ele')
+    compileElement (node) {
+        Array.from(node.attributes).forEach(item => {
+            let attrName = item.name
+            if (this.isDirective(attrName)) {
+                // 使用策略模式优化代码
+                // 想让 compileUtil 中的 this 指向 MiniVue 实例 所以用了 call
+                compileUtil[attrName.split('-')[1]].call(this, node, item.value)
+            }
+        })
     }
 
 

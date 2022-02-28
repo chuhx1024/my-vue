@@ -29,9 +29,7 @@ class Observe {
             configurable: true,
             get () {
                 // 收集依赖
-                alert(val)
                 Dep.target && dep.addSub(Dep.target)
-                console.log(dep, 999)
                 return val
             },
             set (newVal) {
