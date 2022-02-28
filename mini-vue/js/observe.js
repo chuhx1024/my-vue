@@ -37,6 +37,9 @@ class Observe {
                 val = newVal
                  // 如果 新赋的值也是一个对象 再次调用 walk 设置为响应式
                 that.walk(newVal)
+
+                // 发送通知
+                dep.notify()
             }
         })
 

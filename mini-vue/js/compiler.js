@@ -14,6 +14,7 @@ const compileUtil = {
             node.textContent = newVal
         })
     },
+    // 处理双向数据绑定  触发 input事件的 同时  就是触发 observe.js  中的 set 机制  重新渲染视图
     model (node, key) {
         node.value = this.vm[key]
         node.addEventListener('input', (val) => {
